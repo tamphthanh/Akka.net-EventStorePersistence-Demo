@@ -78,13 +78,13 @@ namespace AkkaEventStore.Actors
     }
     #endregion
 
-    public class BasketActorState
+    public class ActorState : IActorState
     {
         public Basket basket = new Basket();
 
-        public BasketActorState Update(IEvent evt)
+        public ActorState Update(IEvent evt)
         {
-            return new BasketActorState { basket = evt.Apply(basket) };
+            return new ActorState { basket = evt.Apply(basket) };
         }
 
         public override string ToString()
@@ -93,41 +93,31 @@ namespace AkkaEventStore.Actors
         }
     }
 
-    public class BasketActor : PersistentActor
+    public class BasketActor : PersistentStateActor
     {
         public override string PersistenceId { get; }
 
-        public BasketActorState State { get; set; }
-
-        // create a new basket
-        public BasketActor()
-        {
-            var id = "basket-13"; // hardcoded for now
-            State = new BasketActorState();
-            State.basket.Id = id;
-            PersistenceId = id;            
-            Persist(new CreatedBasketEvent(id), UpdateState);
-        }
+        public override IActorState State { get; set; }
 
         public BasketActor(string id)
         {
-            State = new BasketActorState();
-            State.basket.Id = id;
+            State = new ActorState();
+            (State as ActorState).basket.Id = id;
             PersistenceId = id;
         }
 
         public void UpdateState(IEvent evt)
         {
-            State = State.Update(evt);
+            State =  (State as ActorState).Update(evt);
         }
 
         protected override bool ReceiveRecover(object message)
         {
-            BasketActorState state;
+            ActorState state;
 
             if (message is IEvent)
                 UpdateState(message as IEvent);
-            else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
+            else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as ActorState) != null)
                 State = state;
             else return false;
             return true;
@@ -135,14 +125,13 @@ namespace AkkaEventStore.Actors
 
         protected override bool ReceiveCommand(object message)
         {
+            base.ReceiveCommand(message);
+
             if (message is AddLineItemToBasketCommand)
             {
                 var cmd = message as AddLineItemToBasketCommand;
-                Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
-                return true;
+                Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);                
             }
-            else if (message as string == "print")
-                Console.WriteLine(State);
             else return false;
             return true;
         }

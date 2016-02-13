@@ -66,10 +66,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\BasketCoordinatorActor.cs" />
     <Compile Include="Actors\BasketActor.cs" />
+    <Compile Include="Actors\IActorState.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Basket.cs" />
     <Compile Include="Models\LineItem.cs" />
+    <Compile Include="Actors\PersistentStateActor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

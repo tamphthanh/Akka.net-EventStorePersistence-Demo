@@ -34,17 +34,60 @@ namespace AkkaEventStore
             using (var system = ActorSystem.Create("AkkaEventStore", config))
             {
                 EventStorePersistence.Init(system);
-                BasicUsage(system);
+
+                Start(system);
 
                 Console.ReadLine();
             }
         }
 
-        private static void BasicUsage(ActorSystem system)
+        private static void Start(ActorSystem system)
         {
-            var aref = system.ActorOf(Props.Create<BasketActor>(), "basket-actor");
-            aref.Tell(new AddLineItemToBasketCommand(new LineItem() { Price = 20, ProductId = "Product-2", Quantity = 3 }));
-            aref.Tell("print");
+            Console.WriteLine("System Started...");
+            var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
+            //var tokens = new[] { "put", "basket-1", "p1", "20", "10" }; // using for load testing
+            while (true)
+            {
+                var command = Console.ReadLine();                
+                var tokens = command.Split(' ');
+                switch (tokens[0])
+                {
+                    case "peek":
+                        if (tokens.Length > 1)
+                        {
+                            aref.Tell("peekBasket " + tokens[1]);
+                        }
+                        else
+                        {
+                            aref.Tell("peek");
+                        }
+                        break;
+                    case "create":
+                        aref.Tell(new IncrementBasketIdCommand());
+                        break;
+                    case "put":
+                        if (tokens.Length == 5)
+                        {
+                            aref.Tell(new AddLineItemToSpecificBasketCommand(
+                                tokens[1]
+                                , new LineItem()
+                                {
+                                    ProductId = tokens[2]
+                                    ,
+                                    Quantity = Convert.ToInt32(tokens[3])
+                                    ,
+                                    Price = Convert.ToInt32(tokens[4])
+                                }));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid parameters");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
