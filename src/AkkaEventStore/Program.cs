@@ -4,6 +4,7 @@ using System;
 using Akka.Persistence.EventStore;
 using Akka.Configuration;
 using AkkaEventStore.Models;
+using System.Threading;
 
 namespace AkkaEventStore
 {
@@ -12,11 +13,6 @@ namespace AkkaEventStore
         static void Main(string[] args)
         {
             var config = ConfigurationFactory.ParseString(@"
-            actor {
-                serializers {
-                    json = ""Akka.Serialization.NewtonSoftJsonSerializer""
-                }
-            }
             akka.persistence {
                 publish-plugin-commands = on
                 journal {
@@ -43,13 +39,32 @@ namespace AkkaEventStore
 
         private static void Start(ActorSystem system)
         {
-            Console.WriteLine("System Started...");
+            Console.WriteLine("System Started...");            
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
+
             //var tokens = new[] { "put", "basket-1", "p1", "20", "10" }; // using for load testing
+            var counter = 0;
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    aref.Tell(new IncrementBasketIdCommand());
+            //}
+            
             while (true)
             {
+                //load testing
+                /*
+                if (counter % 50 == 0)
+                {
+                    Thread.Sleep(1);
+                    Console.WriteLine(counter);
+                }
+                counter++;
+                var tokens = new[] { "put", "basket-" + new Random().Next(1,200) , "p1", "20", "10" }; // using for load testing
+                */
+
                 var command = Console.ReadLine();                
                 var tokens = command.Split(' ');
+
                 switch (tokens[0])
                 {
                     case "peek":
@@ -73,10 +88,8 @@ namespace AkkaEventStore
                                 , new LineItem()
                                 {
                                     ProductId = tokens[2]
-                                    ,
-                                    Quantity = Convert.ToInt32(tokens[3])
-                                    ,
-                                    Price = Convert.ToInt32(tokens[4])
+                                    ,Quantity = Convert.ToInt32(tokens[3])
+                                    ,Price = Convert.ToInt32(tokens[4])
                                 }));
                         }
                         else

@@ -4,6 +4,7 @@ using AkkaEventStore.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace AkkaEventStore.Actors
 {
@@ -98,7 +99,7 @@ namespace AkkaEventStore.Actors
                 var cmd = (message as AddLineItemToSpecificBasketCommand);
                 if (baskets.ContainsKey(cmd.BasketId))
                 {
-                    baskets[cmd.BasketId].Tell(new AddLineItemToBasketCommand(cmd.LineItem));
+                    baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));
                 }
                 else
                 {

@@ -119,7 +119,10 @@ namespace AkkaEventStore.Actors
                 UpdateState(message as IEvent);
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as ActorState) != null)
                 State = state;
-            else return false;
+            else if (message is RecoveryCompleted)
+                Console.WriteLine($"{PersistenceId} Recovery Completed.");
+            else
+               return false;
             return true;
         }
 
