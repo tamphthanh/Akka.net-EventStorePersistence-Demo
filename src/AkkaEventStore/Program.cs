@@ -5,6 +5,8 @@ using Akka.Persistence.EventStore;
 using Akka.Configuration;
 using AkkaEventStore.Models;
 using System.Threading;
+using AkkaEventStore.Messages.Commands;
+using AkkaEventStore.Messages;
 
 namespace AkkaEventStore
 {
@@ -82,7 +84,7 @@ namespace AkkaEventStore
                     case "put":
                         if (tokens.Length == 5)
                         {
-                            aref.Tell(new AddLineItemToSpecificBasketCommand(
+                            aref.Tell(new AddLineItemToBasketMessage(
                                 tokens[1]
                                 , new LineItem()
                                 {

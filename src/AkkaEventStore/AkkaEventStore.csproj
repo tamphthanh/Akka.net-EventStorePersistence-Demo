@@ -67,9 +67,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\AddLineItemToBasketMessage.cs" />
+    <Compile Include="Messages\Commands\AddLineItemToBasketCommand.cs" />
+    <Compile Include="Messages\Commands\CreateBasketCommand.cs" />
     <Compile Include="Actors\BasketCoordinatorActor.cs" />
     <Compile Include="Actors\BasketActor.cs" />
     <Compile Include="Actors\IActorState.cs" />
+    <Compile Include="Messages\Commands\CreateNewBasketCommand.cs" />
+    <Compile Include="Messages\Commands\ICommand.cs" />
+    <Compile Include="Messages\Events\AddedLineItemToBasketEvent.cs" />
+    <Compile Include="Messages\Events\CreatedBasketEvent.cs" />
+    <Compile Include="Messages\Events\CreateNewBasketEvent.cs" />
+    <Compile Include="Messages\Events\IBasketCoordinatorEvent.cs" />
+    <Compile Include="Messages\Events\IEvent.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Basket.cs" />
     <Compile Include="Models\LineItem.cs" />

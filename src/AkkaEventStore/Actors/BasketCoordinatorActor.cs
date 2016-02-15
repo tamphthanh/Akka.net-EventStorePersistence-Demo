@@ -1,42 +1,15 @@
 ﻿using Akka.Actor;
 using Akka.Persistence;
-using AkkaEventStore.Models;
+using AkkaEventStore.Actors.Messages.Commands;
+using AkkaEventStore.Messages;
+using AkkaEventStore.Messages.Commands;
+using AkkaEventStore.Messages.Events;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace AkkaEventStore.Actors
 {
-    public class CreateNewBasketCommand
-    {
-
-    }
-
-    public class CreateNewBasketEvent : IBasketCoordinatorEvent
-    {
-        public int Apply(int counter)
-        {
-            return counter + 1;
-        }
-    }
-
-    public class AddLineItemToSpecificBasketCommand
-    {
-        public LineItem LineItem { get; private set; }
-        public string BasketId { get; private set; }
-
-        public AddLineItemToSpecificBasketCommand(string basketId, LineItem lineItem)
-        {
-            BasketId = basketId;
-            LineItem = lineItem;
-        }
-    }
-
-    public interface IBasketCoordinatorEvent
-    {
-        int Apply(int counter);
-    }
-
     public class BasketCoordinatorActorState : IActorState
     {
         public int counter = 1;
@@ -101,9 +74,9 @@ namespace AkkaEventStore.Actors
                 var success = (bool)baskets[basketId].Ask(new CreateBasketCommand(basketId)).Result;
                 if (success) Persist(new CreateNewBasketEvent(), UpdateState);
             }
-            else if (message is AddLineItemToSpecificBasketCommand)
+            else if (message is AddLineItemToBasketMessage)
             {
-                var cmd = (message as AddLineItemToSpecificBasketCommand);
+                var cmd = (message as AddLineItemToBasketMessage);
                 if (baskets.ContainsKey(cmd.BasketId))
                 {
                     baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));

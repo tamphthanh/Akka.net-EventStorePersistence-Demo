@@ -1,102 +1,13 @@
 ﻿using Akka.Persistence;
+using AkkaEventStore.Actors.Messages.Commands;
+using AkkaEventStore.Messages.Commands;
+using AkkaEventStore.Messages.Events;
 using AkkaEventStore.Models;
 using Newtonsoft.Json;
 using System;
 
 namespace AkkaEventStore.Actors
 {
-    #region Commands
-    public class CreateBasketCommand : ICommand
-    {
-        public Basket basket { get; private set; }
-
-        public CreateBasketCommand(string id)
-        {
-            basket = new Basket { Id = id };
-        }
-
-        public bool Execute(IActorState state)
-        {
-            return true;
-        }
-    }
-
-    public class AddLineItemToBasketCommand : ICommand
-    {
-        public LineItem LineItem { get; private set; }
-
-        public AddLineItemToBasketCommand(LineItem lineItem)
-        {
-            LineItem = lineItem;
-        }
-
-        // execute our command based on current state
-        public bool Execute(IActorState state)
-        {
-            // Validate and do side effects
-            if ((state as BasketActorState).basket.LineItems.Count > 100) return false;
-
-            // success
-            return true;
-        }
-    }
-
-    public interface ICommand
-    {
-        bool Execute(IActorState state);
-    }
-    #endregion
-
-    #region Events
-    public interface IEvent
-    {
-        Basket Apply(Basket basket);
-    }
-
-    public class CreatedBasketEvent : IEvent
-    {
-        public Basket Basket { get; private set; }
-
-        public CreatedBasketEvent(Basket basket)
-        {
-            Basket = basket;
-        }
-
-        public override string ToString()
-        {
-            return Basket.Id;
-        }
-
-        public Basket Apply(Basket basket)
-        {
-            return basket;
-        }
-    }
-
-    public class AddedLineItemToBasketEvent : IEvent
-    {
-        private Basket _basket { get; set; }
-        public LineItem LineItem { get; private set; }
-
-        public AddedLineItemToBasketEvent(LineItem lineItem)
-        {
-            LineItem = lineItem;
-        }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(LineItem);
-        }
-
-        public Basket Apply(Basket basket)
-        {
-            _basket = basket;
-            _basket.LineItems.Add(LineItem);
-            return _basket;
-        }
-    }
-    #endregion
-
     public class BasketActorState : IActorState
     {
         public Basket basket = new Basket();
