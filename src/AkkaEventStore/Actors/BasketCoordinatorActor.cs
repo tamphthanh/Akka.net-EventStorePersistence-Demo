@@ -4,16 +4,15 @@ using AkkaEventStore.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace AkkaEventStore.Actors
 {
-    public class IncrementBasketIdCommand
+    public class CreateNewBasketCommand
     {
 
     }
 
-    public class IncrementBasketIdEvent : IBasketCoordinatorEvent
+    public class CreateNewBasketEvent : IBasketCoordinatorEvent
     {
         public int Apply(int counter)
         {
@@ -40,7 +39,7 @@ namespace AkkaEventStore.Actors
 
     public class BasketCoordinatorActorState : IActorState
     {
-        public int counter;
+        public int counter = 1;
 
         public BasketCoordinatorActorState Update(IBasketCoordinatorEvent evt)
         {
@@ -67,9 +66,12 @@ namespace AkkaEventStore.Actors
 
         public void UpdateState(IBasketCoordinatorEvent evt)
         {
+            if (IsRecovering)
+            {
+                var basketId = "basket-" + (State as BasketCoordinatorActorState).counter;
+                baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
+            }
             State = (State as BasketCoordinatorActorState).Update(evt);
-            var basketId = "basket-" + (State as BasketCoordinatorActorState).counter;
-            baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
         }
 
         protected override bool ReceiveRecover(object message)
@@ -82,6 +84,8 @@ namespace AkkaEventStore.Actors
             }
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketCoordinatorActorState) != null)
                 State = state;
+            else if (message is RecoveryCompleted)
+                Console.WriteLine($"{PersistenceId} Recovery Completed.");            
             else return false;
             return true;
         }
@@ -90,9 +94,12 @@ namespace AkkaEventStore.Actors
         {
             base.ReceiveCommand(message);
 
-            if (message is IncrementBasketIdCommand)
+            if (message is CreateNewBasketCommand)
             {
-                Persist(new IncrementBasketIdEvent(), UpdateState);
+                var basketId = "basket-" + (State as BasketCoordinatorActorState).counter;
+                baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
+                var success = (bool)baskets[basketId].Ask(new CreateBasketCommand(basketId)).Result;
+                if (success) Persist(new CreateNewBasketEvent(), UpdateState);
             }
             else if (message is AddLineItemToSpecificBasketCommand)
             {

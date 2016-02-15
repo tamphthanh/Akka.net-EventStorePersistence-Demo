@@ -6,7 +6,7 @@ using System;
 namespace AkkaEventStore.Actors
 {
     #region Commands
-    public class CreateBasketCommand
+    public class CreateBasketCommand : ICommand
     {
         public Basket basket { get; private set; }
 
@@ -14,9 +14,14 @@ namespace AkkaEventStore.Actors
         {
             basket = new Basket { Id = id };
         }
+
+        public bool Execute(IActorState state)
+        {
+            return true;
+        }
     }
 
-    public class AddLineItemToBasketCommand
+    public class AddLineItemToBasketCommand : ICommand
     {
         public LineItem LineItem { get; private set; }
 
@@ -24,6 +29,21 @@ namespace AkkaEventStore.Actors
         {
             LineItem = lineItem;
         }
+
+        // execute our command based on current state
+        public bool Execute(IActorState state)
+        {
+            // Validate and do side effects
+            if ((state as BasketActorState).basket.LineItems.Count > 100) return false;
+
+            // success
+            return true;
+        }
+    }
+
+    public interface ICommand
+    {
+        bool Execute(IActorState state);
     }
     #endregion
 
@@ -33,19 +53,18 @@ namespace AkkaEventStore.Actors
         Basket Apply(Basket basket);
     }
 
-    // this is weird
     public class CreatedBasketEvent : IEvent
     {
-        public Basket basket { get; private set; }
+        public Basket Basket { get; private set; }
 
-        public CreatedBasketEvent(string id)
+        public CreatedBasketEvent(Basket basket)
         {
-            basket = new Basket { Id = id };
+            Basket = basket;
         }
 
         public override string ToString()
         {
-            return basket.Id;
+            return Basket.Id;
         }
 
         public Basket Apply(Basket basket)
@@ -57,34 +76,34 @@ namespace AkkaEventStore.Actors
     public class AddedLineItemToBasketEvent : IEvent
     {
         private Basket _basket { get; set; }
-        public LineItem _lineItem { get; private set; }
+        public LineItem LineItem { get; private set; }
 
         public AddedLineItemToBasketEvent(LineItem lineItem)
         {
-            _lineItem = lineItem;
+            LineItem = lineItem;
         }
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(_lineItem);
+            return JsonConvert.SerializeObject(LineItem);
         }
 
         public Basket Apply(Basket basket)
         {
             _basket = basket;
-            _basket.LineItems.Add(_lineItem);
+            _basket.LineItems.Add(LineItem);
             return _basket;
         }
     }
     #endregion
 
-    public class ActorState : IActorState
+    public class BasketActorState : IActorState
     {
         public Basket basket = new Basket();
 
-        public ActorState Update(IEvent evt)
+        public BasketActorState Update(IEvent evt)
         {
-            return new ActorState { basket = evt.Apply(basket) };
+            return new BasketActorState { basket = evt.Apply(basket) };
         }
 
         public override string ToString()
@@ -101,28 +120,28 @@ namespace AkkaEventStore.Actors
 
         public BasketActor(string id)
         {
-            State = new ActorState();
-            (State as ActorState).basket.Id = id;
+            State = new BasketActorState();
+            (State as BasketActorState).basket.Id = id;
             PersistenceId = id;
         }
 
         public void UpdateState(IEvent evt)
         {
-            State =  (State as ActorState).Update(evt);
+            State = (State as BasketActorState).Update(evt);
         }
 
         protected override bool ReceiveRecover(object message)
         {
-            ActorState state;
+            BasketActorState state;
 
             if (message is IEvent)
                 UpdateState(message as IEvent);
-            else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as ActorState) != null)
+            else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
                 State = state;
             else if (message is RecoveryCompleted)
                 Console.WriteLine($"{PersistenceId} Recovery Completed.");
             else
-               return false;
+                return false;
             return true;
         }
 
@@ -133,7 +152,19 @@ namespace AkkaEventStore.Actors
             if (message is AddLineItemToBasketCommand)
             {
                 var cmd = message as AddLineItemToBasketCommand;
-                Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);                
+                if (cmd.Execute(State)) // check validation and execute side effects
+                    Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
+                else return false;
+            }
+            else if (message is CreateBasketCommand)
+            {
+                var cmd = message as CreateBasketCommand;
+                if (cmd.Execute(State))
+                {
+                    Persist(new CreatedBasketEvent(cmd.basket), UpdateState);
+                    Sender.Tell(true, Self);
+                }
+                else return false;
             }
             else return false;
             return true;

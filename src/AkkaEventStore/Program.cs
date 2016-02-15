@@ -41,13 +41,12 @@ namespace AkkaEventStore
         {
             Console.WriteLine("System Started...");            
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
-
-            //var tokens = new[] { "put", "basket-1", "p1", "20", "10" }; // using for load testing
-            var counter = 0;
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    aref.Tell(new IncrementBasketIdCommand());
-            //}
+            
+            /*var counter = 0;
+            for (int i = 0; i < 100; i++)
+            {
+                aref.Tell(new CreateNewBasketCommand());
+            }*/
             
             while (true)
             {
@@ -59,7 +58,7 @@ namespace AkkaEventStore
                     Console.WriteLine(counter);
                 }
                 counter++;
-                var tokens = new[] { "put", "basket-" + new Random().Next(1,200) , "p1", "20", "10" }; // using for load testing
+                var tokens = new[] { "put", "basket-" + new Random().Next(0,100) , "p1", "20", "10" }; // using for load testing
                 */
 
                 var command = Console.ReadLine();                
@@ -78,7 +77,7 @@ namespace AkkaEventStore
                         }
                         break;
                     case "create":
-                        aref.Tell(new IncrementBasketIdCommand());
+                        aref.Tell(new CreateNewBasketCommand());
                         break;
                     case "put":
                         if (tokens.Length == 5)
