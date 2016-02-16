@@ -12,14 +12,9 @@ namespace AkkaEventStore.Messages.Events
             Basket = basket;
         }
 
-        public override string ToString()
+        public Basket Apply(Basket basket) // passed basket will be empty since we are dealing with initial event
         {
-            return Basket.Id;
-        }
-
-        public Basket Apply(Basket basket)
-        {
-            return basket;
+            return Basket; // return serialized basket in case it had some initial data
         }
     }
 }

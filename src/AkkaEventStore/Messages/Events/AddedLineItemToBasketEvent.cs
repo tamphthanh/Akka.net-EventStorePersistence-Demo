@@ -13,11 +13,6 @@ namespace AkkaEventStore.Messages.Events
             LineItem = lineItem;
         }
 
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(LineItem);
-        }
-
         public Basket Apply(Basket basket)
         {
             var _basket = basket;
