@@ -1,12 +1,13 @@
 ﻿using AkkaEventStore.Models;
+using System.Linq;
 
 namespace AkkaEventStore.Messages.Events
 {
-    public class AddedLineItemToBasketEvent : IEvent<Basket>
+    public class RemovedLineItemFromBasketEvent : IEvent<Basket>
     {
         public LineItem LineItem { get; private set; }
 
-        public AddedLineItemToBasketEvent(LineItem lineItem)
+        public RemovedLineItemFromBasketEvent(LineItem lineItem)
         {
             LineItem = lineItem;
         }
@@ -14,7 +15,7 @@ namespace AkkaEventStore.Messages.Events
         public Basket Apply(Basket basket)
         {
             var _basket = basket;
-            _basket.LineItems.Add(LineItem);
+            _basket.LineItems.RemoveAll(li => li.Id == LineItem.Id); // TODO improve efficiency
             return _basket;
         }
     }

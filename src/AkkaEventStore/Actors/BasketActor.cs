@@ -60,14 +60,7 @@ namespace AkkaEventStore.Actors
         {
             base.ReceiveCommand(message);
 
-            if (message is AddLineItemToBasketCommand)
-            {
-                var cmd = message as AddLineItemToBasketCommand;
-                if (cmd.Execute(State)) // check validation and execute side effects
-                    Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
-                else return false;
-            }
-            else if (message is CreateBasketCommand)
+            if (message is CreateBasketCommand)
             {
                 var cmd = message as CreateBasketCommand;
                 if (cmd.Execute(State))
@@ -75,6 +68,20 @@ namespace AkkaEventStore.Actors
                     Persist(new CreatedBasketEvent(cmd.basket), UpdateState);
                     Sender.Tell(true, Self);
                 }
+                else return false;
+            }
+            else if (message is AddLineItemToBasketCommand)
+            {
+                var cmd = message as AddLineItemToBasketCommand;
+                if (cmd.Execute(State)) // check validation and execute side effects
+                    Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
+                else return false;
+            }
+            else if (message is RemoveLineItemFromBasketCommand)
+            {
+                var cmd = message as RemoveLineItemFromBasketCommand;
+                if (cmd.Execute(State)) // check validation and execute side effects
+                    Persist(new RemovedLineItemFromBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }
             else return false;

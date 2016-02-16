@@ -1,5 +1,4 @@
-﻿using System;
-using AkkaEventStore.Models;
+﻿using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Messages.Events
 {

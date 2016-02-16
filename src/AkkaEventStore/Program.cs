@@ -111,6 +111,21 @@ namespace AkkaEventStore
                             Console.WriteLine("Invalid parameters");
                         }
                         break;
+                    case "remove":
+                        if (tokens.Length == 3)
+                        {
+                            aref.Tell(new RemoveLineItemFromBasketMessage(
+                                tokens[1]
+                                , new LineItem()
+                                {
+                                    Id = tokens[2]
+                                }));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid parameters");
+                        }
+                        break;
                     default:
                         break;
                 }

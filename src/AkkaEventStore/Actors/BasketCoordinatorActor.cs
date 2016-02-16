@@ -77,14 +77,18 @@ namespace AkkaEventStore.Actors
             else if (message is AddLineItemToBasketMessage)
             {
                 var cmd = (message as AddLineItemToBasketMessage);
+                if (baskets.ContainsKey(cmd.BasketId))                
+                    baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));                
+                else                
+                    Console.WriteLine("No such basket");                
+            }
+            else if (message is RemoveLineItemFromBasketMessage)
+            {
+                var cmd = (message as RemoveLineItemFromBasketMessage);
                 if (baskets.ContainsKey(cmd.BasketId))
-                {
-                    baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));
-                }
+                    baskets[cmd.BasketId].Forward(new RemoveLineItemFromBasketCommand(cmd.LineItem));
                 else
-                {
                     Console.WriteLine("No such basket");
-                }
             }
             else if ((message as string).StartsWith("peekBasket "))
             {

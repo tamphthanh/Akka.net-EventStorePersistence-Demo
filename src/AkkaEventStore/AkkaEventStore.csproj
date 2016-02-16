@@ -75,7 +75,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\RemoveLineItemFromBasketMessage.cs" />
     <Compile Include="Messages\AddLineItemToBasketMessage.cs" />
+    <Compile Include="Messages\Commands\RemoveLineItemFromBasketCommand.cs" />
     <Compile Include="Messages\Commands\AddLineItemToBasketCommand.cs" />
     <Compile Include="Messages\Commands\CreateBasketCommand.cs" />
     <Compile Include="Actors\BasketCoordinatorActor.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Actors\IActorState.cs" />
     <Compile Include="Messages\Commands\CreateNewBasketCommand.cs" />
     <Compile Include="Messages\Commands\ICommand.cs" />
+    <Compile Include="Messages\Events\RemovedLineItemFromBasketEvent.cs" />
     <Compile Include="Messages\Events\AddedLineItemToBasketEvent.cs" />
     <Compile Include="Messages\Events\CreatedBasketEvent.cs" />
     <Compile Include="Messages\Events\CreateNewBasketEvent.cs" />
