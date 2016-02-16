@@ -1,9 +1,9 @@
-﻿using AkkaEventStore.Models;
+﻿using AkkaEventStore.Actors;
 
 namespace AkkaEventStore.Messages.Events
 {
-    public interface IEvent
+    public interface IEvent<T>
     {
-        Basket Apply(Basket basket);
+        T Apply(T data);
     }
 }

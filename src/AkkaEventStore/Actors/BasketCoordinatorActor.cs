@@ -14,7 +14,7 @@ namespace AkkaEventStore.Actors
     {
         public int counter = 1;
 
-        public BasketCoordinatorActorState Update(IBasketCoordinatorEvent evt)
+        public BasketCoordinatorActorState Update(IEvent<int> evt)
         {
             return new BasketCoordinatorActorState { counter = evt.Apply(counter) };
         }
@@ -37,7 +37,7 @@ namespace AkkaEventStore.Actors
             State = new BasketCoordinatorActorState();
         }
 
-        public void UpdateState(IBasketCoordinatorEvent evt)
+        public void UpdateState(IEvent<int> evt)
         {
             if (IsRecovering)
             {
@@ -51,9 +51,9 @@ namespace AkkaEventStore.Actors
         {
             BasketCoordinatorActorState state;
 
-            if (message is IBasketCoordinatorEvent)
+            if (message is IEvent<int>)
             {
-                UpdateState(message as IBasketCoordinatorEvent);
+                UpdateState(message as IEvent<int>);
             }
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketCoordinatorActorState) != null)
                 State = state;

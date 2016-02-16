@@ -12,7 +12,7 @@ namespace AkkaEventStore.Actors
     {
         public Basket basket = new Basket();
 
-        public BasketActorState Update(IEvent evt)
+        public BasketActorState Update(IEvent<Basket> evt)
         {
             return new BasketActorState { basket = evt.Apply(basket) };
         }
@@ -36,7 +36,7 @@ namespace AkkaEventStore.Actors
             PersistenceId = id;
         }
 
-        public void UpdateState(IEvent evt)
+        public void UpdateState(IEvent<Basket> evt)
         {
             State = (State as BasketActorState).Update(evt);
         }
@@ -45,8 +45,8 @@ namespace AkkaEventStore.Actors
         {
             BasketActorState state;
 
-            if (message is IEvent)
-                UpdateState(message as IEvent);
+            if (message is IEvent<Basket>)
+                UpdateState(message as IEvent<Basket>);
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
                 State = state;
             else if (message is RecoveryCompleted)

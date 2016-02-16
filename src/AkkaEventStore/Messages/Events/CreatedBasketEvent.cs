@@ -3,7 +3,7 @@ using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Messages.Events
 {
-    public class CreatedBasketEvent : IEvent
+    public class CreatedBasketEvent : IEvent<Basket>
     {
         public Basket Basket { get; private set; }
 

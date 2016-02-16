@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Akka.Persistence.EventStore\src\Akka.Persistence.EventStore\bin\Release\Akka.Persistence.EventStore.dll</HintPath>
     </Reference>
+    <Reference Include="Akka.Serialization.Wire, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Akka.Serialization.Wire.1.0.6.17-beta\lib\net45\Akka.Serialization.Wire.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.ProtocolBuffers, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
       <HintPath>packages\Google.ProtocolBuffers.2.4.1.555\lib\net40\Google.ProtocolBuffers.dll</HintPath>
       <Private>True</Private>
@@ -65,6 +69,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Wire, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Wire.0.0.6\lib\Wire.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Messages\AddLineItemToBasketMessage.cs" />
@@ -78,7 +86,6 @@
     <Compile Include="Messages\Events\AddedLineItemToBasketEvent.cs" />
     <Compile Include="Messages\Events\CreatedBasketEvent.cs" />
     <Compile Include="Messages\Events\CreateNewBasketEvent.cs" />
-    <Compile Include="Messages\Events\IBasketCoordinatorEvent.cs" />
     <Compile Include="Messages\Events\IEvent.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Basket.cs" />

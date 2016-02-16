@@ -14,7 +14,20 @@ namespace AkkaEventStore
     {
         static void Main(string[] args)
         {
+            /*
+            akka {
+                actor {
+                    serializers {
+                    wire = ""Akka.Serialization.WireSerializer, Akka.Serialization.Wire""
+                    }
+                        serialization-bindings {
+                    ""System.Object"" = wire
+                    }
+                }
+            }
+            */
             var config = ConfigurationFactory.ParseString(@"
+
             akka.persistence {
                 publish-plugin-commands = on
                 journal {
@@ -49,7 +62,7 @@ namespace AkkaEventStore
             {
                 aref.Tell(new CreateNewBasketCommand());
             }*/
-            
+
             while (true)
             {
                 //load testing
