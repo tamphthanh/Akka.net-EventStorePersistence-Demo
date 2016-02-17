@@ -2,7 +2,7 @@
 
 namespace AkkaEventStore.Messages
 {
-    public class RemoveLineItemFromBasketMessage
+    public struct RemoveLineItemFromBasketMessage
     {
         public LineItem LineItem { get; private set; }
         public string BasketId { get; private set; }

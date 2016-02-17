@@ -3,7 +3,7 @@ using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Messages.Commands
 {
-    public class AddLineItemToBasketCommand : ICommand
+    public struct AddLineItemToBasketCommand : ICommand
     {
         public LineItem LineItem { get; private set; }
 

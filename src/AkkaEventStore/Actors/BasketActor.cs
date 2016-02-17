@@ -49,8 +49,8 @@ namespace AkkaEventStore.Actors
                 UpdateState(message as IEvent<Basket>);
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
                 State = state;
-            else if (message is RecoveryCompleted)
-                Console.WriteLine($"{PersistenceId} Recovery Completed.");
+            //else if (message is RecoveryCompleted)
+            //    Console.WriteLine($"{PersistenceId} Recovery Completed.");
             else
                 return false;
             return true;
@@ -62,24 +62,24 @@ namespace AkkaEventStore.Actors
 
             if (message is CreateBasketCommand)
             {
-                var cmd = message as CreateBasketCommand;
+                var cmd = (CreateBasketCommand)message;
                 if (cmd.Execute(State))
                 {
                     Persist(new CreatedBasketEvent(cmd.basket), UpdateState);
-                    Sender.Tell(true, Self);
+                    //Sender.Tell(true, Self);
                 }
                 else return false;
             }
             else if (message is AddLineItemToBasketCommand)
             {
-                var cmd = message as AddLineItemToBasketCommand;
+                var cmd = (AddLineItemToBasketCommand)message;
                 if (cmd.Execute(State)) // check validation and execute side effects
                     Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }
             else if (message is RemoveLineItemFromBasketCommand)
             {
-                var cmd = message as RemoveLineItemFromBasketCommand;
+                var cmd = (RemoveLineItemFromBasketCommand)message;
                 if (cmd.Execute(State)) // check validation and execute side effects
                     Persist(new RemovedLineItemFromBasketEvent(cmd.LineItem), UpdateState);
                 else return false;

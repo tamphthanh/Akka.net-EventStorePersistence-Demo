@@ -3,7 +3,7 @@ using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Actors.Messages.Commands
 {
-    public class CreateBasketCommand : ICommand
+    public struct CreateBasketCommand : ICommand
     {
         public Basket basket { get; private set; }
 

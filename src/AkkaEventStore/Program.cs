@@ -18,10 +18,10 @@ namespace AkkaEventStore
             akka {
                 actor {
                     serializers {
-                    wire = ""Akka.Serialization.WireSerializer, Akka.Serialization.Wire""
+                        wire = ""Akka.Serialization.WireSerializer, Akka.Serialization.Wire""
                     }
-                        serialization-bindings {
-                    ""System.Object"" = wire
+                    serialization-bindings {
+                        ""System.Object"" = wire
                     }
                 }
             }
@@ -57,11 +57,12 @@ namespace AkkaEventStore
             Console.WriteLine("System Started...");            
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
             
-            /*var counter = 0;
-            for (int i = 0; i < 100; i++)
+            var counter = 0;
+            var total = 1;
+            for (int i = 0; i < total; i++)
             {
                 aref.Tell(new CreateNewBasketCommand());
-            }*/
+            }
 
             while (true)
             {
@@ -73,7 +74,7 @@ namespace AkkaEventStore
                     Console.WriteLine(counter);
                 }
                 counter++;
-                var tokens = new[] { "put", "basket-" + new Random().Next(0,100) , "p1", "20", "10" }; // using for load testing
+                var tokens = new[] { "put", "basket-" + new Random().Next(0, total) , "p1", "20", "10" }; // using for load testing
                 */
 
                 var command = Console.ReadLine();                

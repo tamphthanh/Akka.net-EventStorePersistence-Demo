@@ -3,7 +3,7 @@ using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Messages.Commands
 {
-    public class RemoveLineItemFromBasketCommand : ICommand
+    public struct RemoveLineItemFromBasketCommand : ICommand
     {
         public LineItem LineItem { get; private set; }
 
@@ -15,7 +15,8 @@ namespace AkkaEventStore.Messages.Commands
         public bool Execute(IActorState state)
         {
             var basket = (state as BasketActorState).basket;
-            if (basket.LineItems.Exists(li => li.Id == LineItem.Id)) // do other validation here like product/price/quantity
+            var lineItem = LineItem;
+            if (basket.LineItems.Exists(li => li.Id == lineItem.Id)) // do other validation here like product/price/quantity
                 return true;         
             return false;
         }

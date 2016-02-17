@@ -33,7 +33,37 @@ namespace AkkaEventStore.Actors
 
         public BasketCoordinatorActor()
         {
-            PersistenceId = "BasketCoordinatorActor";
+            /* Projection -
+fromCategory('basket')
+  .when({
+    $init : function() {
+         return {
+            count: 0
+        }
+    },
+    "AkkaEventStore.Messages.Events.CreatedBasketEvent": function(s, e) {
+        var count = s.count++;
+        emit("baskets", "basket", {
+            //e.body.PersistenceId
+            "$id": 1,
+            "$type": "Akka.Persistence.Persistent, Akka.Persistence",
+            "Payload": {
+                "$id": "2",
+                "$type": "AkkaEventStore.Messages.Events.CreateNewBasketEvent, AkkaEventStore",
+            },
+            "Sender": {
+                "$id": "3",
+                "$type": "Akka.Actor.ActorRefBase+Surrogate, Akka",
+                "Path": "akka://AkkaEventStore/deadLetters"
+            },
+            PersistenceId: "baskets",
+            "SequenceNr": count,
+            "Manifest": ""
+        })
+    }
+  })
+            */
+            PersistenceId = "baskets";
             State = new BasketCoordinatorActorState();
         }
 
@@ -71,20 +101,23 @@ namespace AkkaEventStore.Actors
             {
                 var basketId = "basket-" + (State as BasketCoordinatorActorState).counter;
                 baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
-                var success = (bool)baskets[basketId].Ask(new CreateBasketCommand(basketId)).Result;
-                if (success) Persist(new CreateNewBasketEvent(), UpdateState);
+                //var success = (bool)baskets[basketId].Ask(new CreateBasketCommand(basketId)).Result;
+                //if (success) Persist(new CreateNewBasketEvent(), UpdateState);
+                baskets[basketId].Tell(new CreateBasketCommand(basketId));
+                UpdateState(new CreateNewBasketEvent());
+                //Persist(new CreateNewBasketEvent(), UpdateState);
             }
             else if (message is AddLineItemToBasketMessage)
             {
-                var cmd = (message as AddLineItemToBasketMessage);
-                if (baskets.ContainsKey(cmd.BasketId))                
-                    baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));                
-                else                
-                    Console.WriteLine("No such basket");                
+                var cmd = (AddLineItemToBasketMessage)message;
+                if (baskets.ContainsKey(cmd.BasketId))
+                    baskets[cmd.BasketId].Forward(new AddLineItemToBasketCommand(cmd.LineItem));
+                else
+                    Console.WriteLine("No such basket");
             }
             else if (message is RemoveLineItemFromBasketMessage)
             {
-                var cmd = (message as RemoveLineItemFromBasketMessage);
+                var cmd = (RemoveLineItemFromBasketMessage)message;
                 if (baskets.ContainsKey(cmd.BasketId))
                     baskets[cmd.BasketId].Forward(new RemoveLineItemFromBasketCommand(cmd.LineItem));
                 else
@@ -103,6 +136,10 @@ namespace AkkaEventStore.Actors
                     Console.WriteLine("No such basket");
                 }
             }
+            /*else {
+                Console.WriteLine($"Failed - {message} {Sender}");
+                return false;
+            }*/
             else return false;
             return true;
         }

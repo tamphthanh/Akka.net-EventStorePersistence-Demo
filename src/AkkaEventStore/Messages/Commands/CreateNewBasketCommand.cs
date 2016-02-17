@@ -3,7 +3,7 @@ using AkkaEventStore.Actors;
 
 namespace AkkaEventStore.Messages.Commands
 {
-    public class CreateNewBasketCommand : ICommand
+    public struct CreateNewBasketCommand : ICommand
     {
         public bool Execute(IActorState state)
         {

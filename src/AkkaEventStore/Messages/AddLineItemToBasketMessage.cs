@@ -2,7 +2,7 @@
 
 namespace AkkaEventStore.Messages
 {
-    public class AddLineItemToBasketMessage
+    public struct AddLineItemToBasketMessage
     {
         public LineItem LineItem { get; private set; }
         public string BasketId { get; private set; }
