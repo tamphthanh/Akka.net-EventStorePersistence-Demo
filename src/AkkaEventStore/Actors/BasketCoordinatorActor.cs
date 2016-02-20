@@ -13,7 +13,7 @@ namespace AkkaEventStore.Actors
     public class BasketCoordinatorActor : ReceiveActor
     {
         private IDictionary<string, IActorRef> baskets = new Dictionary<string, IActorRef>();
-        int counter = 1;
+        int counter = 0;
 
         public BasketCoordinatorActor()
         {
@@ -78,6 +78,8 @@ fromCategory('basket')
                 }
                 counter = number;
             }
+
+            Console.WriteLine($"[{DateTime.Now}] Basket Coordinator Recovered.");
 
             Receive<CreateNewBasketCommand>(message =>
             {

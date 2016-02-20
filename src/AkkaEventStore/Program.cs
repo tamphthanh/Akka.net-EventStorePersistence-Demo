@@ -30,6 +30,16 @@ namespace AkkaEventStore
             }
             */
             var config = ConfigurationFactory.ParseString(@"
+            akka {
+                actor {
+                    serializers {
+                        wire = ""Akka.Serialization.WireSerializer, Akka.Serialization.Wire""
+                    }
+                    serialization-bindings {
+                        ""System.Object"" = wire
+                    }
+                }
+            }
             akka.persistence {
                 publish-plugin-commands = on
                 journal {
@@ -60,17 +70,17 @@ namespace AkkaEventStore
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
             
             var counter = 0;
-            var total = 0;
+            /*var total = 10000;
             for (int i = 0; i < total; i++)
             {
                 aref.Tell(new CreateNewBasketCommand());
-            }
+            }*/
 
             while (true)
             {
                 //load testing
-                /*
-                if (counter % 50 == 0)
+                
+                /*if (counter % 50 == 0)
                 {
                     Thread.Sleep(1);
                     Console.WriteLine(counter);
