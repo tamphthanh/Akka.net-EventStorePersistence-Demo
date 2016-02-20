@@ -70,13 +70,13 @@ fromCategory('basket')
                 connection.ReadStreamEventsBackwardAsync("basketsCounter", StreamPosition.End, 1, false).Result;
             if (streamEvents.Events.Length > 0)
             {
-                var number = Encoding.UTF8.GetString(streamEvents.Events[0].Event.Data);
-                for (int i = Convert.ToInt32(number); i > 0; i--)
+                var number = Convert.ToInt32(Encoding.UTF8.GetString(streamEvents.Events[0].Event.Data));
+                for (int i = number; i > 0; i--)
                 {
-                    var basketId = "basket-" + i;                    
-                    counter = i;
+                    var basketId = "basket-" + i;                                        
                     baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
                 }
+                counter = number;
             }
 
             Receive<CreateNewBasketCommand>(message =>
