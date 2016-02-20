@@ -69,11 +69,11 @@ namespace AkkaEventStore
             Console.WriteLine("System Started...");            
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
             
-            var counter = 0;
-            /*var total = 10000;
+            /*var counter = 0;
+            var total = 1000;
             for (int i = 0; i < total; i++)
             {
-                aref.Tell(new CreateNewBasketCommand());
+                aref.Tell(new CreateNewBasketMessage());
             }*/
 
             while (true)
@@ -105,7 +105,7 @@ namespace AkkaEventStore
                         }
                         break;
                     case "create":
-                        aref.Tell(new CreateNewBasketCommand());
+                        aref.Tell(new CreateNewBasketMessage());
                         break;
                     case "put":
                         if (tokens.Length == 5)

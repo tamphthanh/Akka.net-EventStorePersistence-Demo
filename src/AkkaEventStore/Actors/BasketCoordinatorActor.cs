@@ -17,38 +17,7 @@ namespace AkkaEventStore.Actors
 
         public BasketCoordinatorActor()
         {
-            /* Projection faking a persisted actor -
-fromCategory('basket')
-  .when({
-    $init : function() {
-         return {
-            count: 0
-        }
-    },
-    "AkkaEventStore.Messages.Events.CreatedBasketEvent": function(s, e) {
-        var count = s.count++;
-        emit("baskets", "AkkaEventStore.Messages.Events.CreateNewBasketEvent", {
-            "$id": 1,
-            "$type": "Akka.Persistence.Persistent, Akka.Persistence",
-            "Payload": {
-                "$id": "2",
-                "$type": "AkkaEventStore.Messages.Events.CreateNewBasketEvent, AkkaEventStore",
-            },
-            "Sender": {
-                "$id": "3",
-                "$type": "Akka.Actor.ActorRefBase+Surrogate, Akka",
-                "Path": "akka://AkkaEventStore/deadLetters"
-            },
-            PersistenceId: "baskets",
-            "SequenceNr": count,
-            "Manifest": ""
-        })
-    }
-  })
-            */
-
             /*
-
             fromCategory('basket')
               .when({
                 $init : function() {
@@ -61,7 +30,7 @@ fromCategory('basket')
                     emit("basketsCounter", "Increment", count)
                 }
               })
-                        */
+            */
 
             // initialize directly from database
             var connection = EventStoreConnection.Create(new IPEndPoint(IPAddress.Loopback, 1113));
@@ -81,7 +50,7 @@ fromCategory('basket')
 
             Console.WriteLine($"[{DateTime.Now}] Basket Coordinator Recovered.");
 
-            Receive<CreateNewBasketCommand>(message =>
+            Receive<CreateNewBasketMessage>(message =>
             {
                 var basketId = "basket-" + ++counter;
                 baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));

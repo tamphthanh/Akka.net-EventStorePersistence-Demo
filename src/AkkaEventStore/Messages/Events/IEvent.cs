@@ -1,7 +1,7 @@
 ﻿namespace AkkaEventStore.Messages.Events
 {
-    public interface IEvent<T>
+    public abstract class IEvent
     {
-        T Apply(T data);
+        
     }
 }

@@ -13,9 +13,9 @@ namespace AkkaEventStore.Actors
     {
         public Basket basket = new Basket();
 
-        public BasketActorState Update(IEvent<Basket> evt)
+        public BasketActorState Update(IEvent evt)
         {
-            return new BasketActorState { basket = evt.Apply(basket) };
+            return new BasketActorState { basket = BasketEventHandlers.Handle(basket, evt) };
         }
 
         public override string ToString()
@@ -37,7 +37,7 @@ namespace AkkaEventStore.Actors
             PersistenceId = id;
         }
 
-        public void UpdateState(IEvent<Basket> evt)
+        public void UpdateState(IEvent evt)
         {
             State = (State as BasketActorState).Update(evt);
         }
@@ -46,8 +46,8 @@ namespace AkkaEventStore.Actors
         {
             BasketActorState state;
 
-            if (message is IEvent<Basket>)
-                UpdateState(message as IEvent<Basket>);
+            if (message is IEvent)
+                UpdateState(message as IEvent);
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
                 State = state;
             else if (message is RecoveryCompleted)
@@ -64,24 +64,21 @@ namespace AkkaEventStore.Actors
             if (message is CreateBasketCommand)
             {
                 var cmd = (CreateBasketCommand)message;
-                if (BasketCommandHandlers.CreateBasketCommandHandler(State, cmd))
-                {
-                    Persist(new CreatedBasketEvent(cmd.basket), UpdateState);
-                    //Sender.Tell(true, Self);
-                }
+                if (BasketCommandHandlers.Handle(State, cmd))                
+                    Persist(new CreatedBasketEvent(cmd.basket), UpdateState);                
                 else return false;
             }
             else if (message is AddLineItemToBasketCommand)
             {
                 var cmd = (AddLineItemToBasketCommand)message;
-                if (BasketCommandHandlers.AddLineItemToBasketCommandHandler(State, cmd)) // check validation and execute side effects
+                if (BasketCommandHandlers.Handle(State, cmd))
                     Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }
             else if (message is RemoveLineItemFromBasketCommand)
             {
                 var cmd = (RemoveLineItemFromBasketCommand)message;
-                if (BasketCommandHandlers.RemoveLineItemFromBasketCommand(State, cmd)) // check validation and execute side effects
+                if (BasketCommandHandlers.Handle(State, cmd))
                     Persist(new RemovedLineItemFromBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using AkkaEventStore.Actors;
 using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Messages.Commands

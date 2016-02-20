@@ -80,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\Handlers\Basket\BasketEventHandlers.cs" />
     <Compile Include="Messages\Handlers\Basket\BasketCommandHandlers.cs" />
     <Compile Include="Messages\RemoveLineItemFromBasketMessage.cs" />
     <Compile Include="Messages\AddLineItemToBasketMessage.cs" />
@@ -89,12 +90,11 @@
     <Compile Include="Actors\BasketCoordinatorActor.cs" />
     <Compile Include="Actors\BasketActor.cs" />
     <Compile Include="Actors\IActorState.cs" />
-    <Compile Include="Messages\Commands\CreateNewBasketCommand.cs" />
+    <Compile Include="Messages\CreateNewBasketCommand.cs" />
     <Compile Include="Messages\Commands\ICommand.cs" />
     <Compile Include="Messages\Events\RemovedLineItemFromBasketEvent.cs" />
     <Compile Include="Messages\Events\AddedLineItemToBasketEvent.cs" />
     <Compile Include="Messages\Events\CreatedBasketEvent.cs" />
-    <Compile Include="Messages\Events\CreateNewBasketEvent.cs" />
     <Compile Include="Messages\Events\IEvent.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Basket.cs" />

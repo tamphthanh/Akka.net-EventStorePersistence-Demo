@@ -2,7 +2,7 @@
 
 namespace AkkaEventStore.Messages.Events
 {
-    public class CreatedBasketEvent : IEvent<Basket>
+    public class CreatedBasketEvent : IEvent
     {
         public Basket Basket { get; }
 
@@ -10,9 +10,5 @@ namespace AkkaEventStore.Messages.Events
         {
             Basket = basket;
         }
-
-        // passed basket will be empty since we are dealing with initial event
-        // return serialized basket in case it had some initial data
-        public Basket Apply(Basket basket) => Basket;        
     }
 }
