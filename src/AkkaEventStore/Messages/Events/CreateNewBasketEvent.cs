@@ -2,9 +2,6 @@
 {
     public class CreateNewBasketEvent : IEvent<int>
     {
-        public int Apply(int counter)
-        {
-            return counter + 1;
-        }
+        public int Apply(int counter) => counter + 1;        
     }
 }

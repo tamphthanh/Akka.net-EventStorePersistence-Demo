@@ -3,18 +3,13 @@ using AkkaEventStore.Models;
 
 namespace AkkaEventStore.Actors.Messages.Commands
 {
-    public struct CreateBasketCommand : ICommand
+    public class CreateBasketCommand : ICommand
     {
-        public Basket basket { get; private set; }
+        public Basket basket { get; }
 
         public CreateBasketCommand(string id)
         {
             basket = new Basket { Id = id };
-        }
-
-        public bool Execute(IActorState state)
-        {
-            return true;
-        }
+        }        
     }
 }

@@ -7,6 +7,9 @@ using AkkaEventStore.Models;
 using System.Threading;
 using AkkaEventStore.Messages.Commands;
 using AkkaEventStore.Messages;
+using EventStore.ClientAPI;
+using System.Net;
+using System.Text;
 
 namespace AkkaEventStore
 {
@@ -27,7 +30,6 @@ namespace AkkaEventStore
             }
             */
             var config = ConfigurationFactory.ParseString(@"
-
             akka.persistence {
                 publish-plugin-commands = on
                 journal {
@@ -43,11 +45,11 @@ namespace AkkaEventStore
             }");
 
             using (var system = ActorSystem.Create("AkkaEventStore", config))
-            {
+            {                
                 EventStorePersistence.Init(system);
 
                 Start(system);
-
+                
                 Console.ReadLine();
             }
         }
@@ -58,7 +60,7 @@ namespace AkkaEventStore
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
             
             var counter = 0;
-            var total = 1;
+            var total = 0;
             for (int i = 0; i < total; i++)
             {
                 aref.Tell(new CreateNewBasketCommand());

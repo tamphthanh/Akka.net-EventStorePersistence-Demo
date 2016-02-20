@@ -5,7 +5,7 @@ namespace AkkaEventStore.Messages.Events
 {
     public class RemovedLineItemFromBasketEvent : IEvent<Basket>
     {
-        public LineItem LineItem { get; private set; }
+        public LineItem LineItem { get; }
 
         public RemovedLineItemFromBasketEvent(LineItem lineItem)
         {
@@ -14,9 +14,9 @@ namespace AkkaEventStore.Messages.Events
 
         public Basket Apply(Basket basket)
         {
-            var _basket = basket;
-            _basket.LineItems.RemoveAll(li => li.Id == LineItem.Id); // TODO improve efficiency
-            return _basket;
+            var newBasket = basket;
+            basket.LineItems = basket.LineItems.Where(li => li.Id != LineItem.Id).ToList();
+            return newBasket;
         }
     }
 }

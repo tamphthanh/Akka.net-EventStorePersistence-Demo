@@ -4,7 +4,7 @@ namespace AkkaEventStore.Messages.Events
 {
     public class AddedLineItemToBasketEvent : IEvent<Basket>
     {
-        public LineItem LineItem { get; private set; }
+        public LineItem LineItem { get; }
 
         public AddedLineItemToBasketEvent(LineItem lineItem)
         {
@@ -13,9 +13,9 @@ namespace AkkaEventStore.Messages.Events
 
         public Basket Apply(Basket basket)
         {
-            var _basket = basket;
-            _basket.LineItems.Add(LineItem);
-            return _basket;
+            var newBasket = basket;
+            newBasket.LineItems.Add(LineItem);
+            return newBasket;
         }
     }
 }

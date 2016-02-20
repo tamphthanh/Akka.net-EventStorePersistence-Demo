@@ -2,6 +2,7 @@
 using AkkaEventStore.Actors.Messages.Commands;
 using AkkaEventStore.Messages.Commands;
 using AkkaEventStore.Messages.Events;
+using AkkaEventStore.Messages.Handlers.Basket;
 using AkkaEventStore.Models;
 using Newtonsoft.Json;
 using System;
@@ -49,8 +50,8 @@ namespace AkkaEventStore.Actors
                 UpdateState(message as IEvent<Basket>);
             else if (message is SnapshotOffer && (state = ((SnapshotOffer)message).Snapshot as BasketActorState) != null)
                 State = state;
-            //else if (message is RecoveryCompleted)
-            //    Console.WriteLine($"{PersistenceId} Recovery Completed.");
+            else if (message is RecoveryCompleted)
+                Console.WriteLine($"{PersistenceId} Recovery Completed.");
             else
                 return false;
             return true;
@@ -63,7 +64,7 @@ namespace AkkaEventStore.Actors
             if (message is CreateBasketCommand)
             {
                 var cmd = (CreateBasketCommand)message;
-                if (cmd.Execute(State))
+                if (BasketCommandHandlers.CreateBasketCommandHandler(State, cmd))
                 {
                     Persist(new CreatedBasketEvent(cmd.basket), UpdateState);
                     //Sender.Tell(true, Self);
@@ -73,14 +74,14 @@ namespace AkkaEventStore.Actors
             else if (message is AddLineItemToBasketCommand)
             {
                 var cmd = (AddLineItemToBasketCommand)message;
-                if (cmd.Execute(State)) // check validation and execute side effects
+                if (BasketCommandHandlers.AddLineItemToBasketCommandHandler(State, cmd)) // check validation and execute side effects
                     Persist(new AddedLineItemToBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }
             else if (message is RemoveLineItemFromBasketCommand)
             {
                 var cmd = (RemoveLineItemFromBasketCommand)message;
-                if (cmd.Execute(State)) // check validation and execute side effects
+                if (BasketCommandHandlers.RemoveLineItemFromBasketCommand(State, cmd)) // check validation and execute side effects
                     Persist(new RemovedLineItemFromBasketEvent(cmd.LineItem), UpdateState);
                 else return false;
             }
