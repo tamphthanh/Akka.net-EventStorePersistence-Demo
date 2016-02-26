@@ -34,6 +34,17 @@ namespace AkkaEventStore.Actors
 
             // initialize directly from database
             var connection = EventStoreConnection.Create(new IPEndPoint(IPAddress.Loopback, 1113));
+
+            //var connection = EventStoreConnection.Create(
+            //    ConnectionSettings.Create().KeepReconnecting(),
+            //    ClusterSettings.Create().DiscoverClusterViaGossipSeeds()
+            //        .SetGossipTimeout(TimeSpan.FromMilliseconds(500))
+            //        .SetGossipSeedEndPoints(new IPEndPoint[] {
+            //            new IPEndPoint(IPAddress.Loopback, 1114),
+            //            new IPEndPoint(IPAddress.Loopback, 2114),
+            //            new IPEndPoint(IPAddress.Loopback, 3114),
+            //    }));
+
             connection.ConnectAsync().Wait();
             var streamEvents =
                 connection.ReadStreamEventsBackwardAsync("basketsCounter", StreamPosition.End, 1, false).Result;
@@ -42,7 +53,7 @@ namespace AkkaEventStore.Actors
                 var number = Convert.ToInt32(Encoding.UTF8.GetString(streamEvents.Events[0].Event.Data));
                 for (int i = number; i > 0; i--)
                 {
-                    var basketId = "basket-" + i;                                        
+                    var basketId = "basket-" + i;
                     baskets.Add(basketId, Context.ActorOf(Props.Create<BasketActor>(basketId), basketId));
                 }
                 counter = number;

@@ -44,7 +44,7 @@
     </Reference>
     <Reference Include="Akka.Persistence.EventStore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Akka.Persistence.EventStore\src\Akka.Persistence.EventStore\bin\Debug\Akka.Persistence.EventStore.dll</HintPath>
+      <HintPath>..\..\..\Akka.Persistence.EventStore\bin\Akka.Persistence.EventStore\Akka.Persistence.EventStore.dll</HintPath>
     </Reference>
     <Reference Include="Akka.Serialization.Wire, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Akka.Serialization.Wire.1.0.6.17-beta\lib\net45\Akka.Serialization.Wire.dll</HintPath>

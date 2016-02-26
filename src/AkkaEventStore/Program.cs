@@ -17,18 +17,6 @@ namespace AkkaEventStore
     {
         static void Main(string[] args)
         {
-            /*
-            akka {
-                actor {
-                    serializers {
-                        wire = ""Akka.Serialization.WireSerializer, Akka.Serialization.Wire""
-                    }
-                    serialization-bindings {
-                        ""System.Object"" = wire
-                    }
-                }
-            }
-            */
             var config = ConfigurationFactory.ParseString(@"
             akka {
                 actor {
@@ -47,9 +35,7 @@ namespace AkkaEventStore
                     eventstore {
                         class = ""Akka.Persistence.EventStore.Journal.EventStoreJournal, Akka.Persistence.EventStore""
                         plugin-dispatcher = ""akka.actor.default-dispatcher""
-                        server-host = ""127.0.0.1""
-                        server-tcp-port = 4532
-                        connection-settings-factory = ""Akka.Persistence.EventStore.DefaultConnectionSettingsFactory, Akka.Persistence.EventStore""
+                        connection-string = ""ConnectTo=tcp://admin:changeit@127.0.0.1:1113;""
                     }
                 }
             }");
