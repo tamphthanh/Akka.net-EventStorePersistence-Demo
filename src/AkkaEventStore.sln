@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaEventStore", "AkkaEvent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaEventStore.Console", "AkkaEventStore.Console\AkkaEventStore.Console.csproj", "{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AkkaEventStore.FSharp.Console", "AkkaEventStore.FSharp.Console\AkkaEventStore.FSharp.Console.fsproj", "{FE17AC9B-1E09-41A8-A11E-BF59839F98B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE17AC9B-1E09-41A8-A11E-BF59839F98B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE17AC9B-1E09-41A8-A11E-BF59839F98B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE17AC9B-1E09-41A8-A11E-BF59839F98B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE17AC9B-1E09-41A8-A11E-BF59839F98B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
