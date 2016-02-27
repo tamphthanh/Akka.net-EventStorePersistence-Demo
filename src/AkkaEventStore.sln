@@ -3,12 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaEventStore", "AkkaEventStore.csproj", "{88564EFE-E63A-442E-B6D6-538C0308DA0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaEventStore", "AkkaEventStore\AkkaEventStore.csproj", "{88564EFE-E63A-442E-B6D6-538C0308DA0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaEventStore.Console", "AkkaEventStore.Console\AkkaEventStore.Console.csproj", "{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -18,6 +17,10 @@ Global
 		{88564EFE-E63A-442E-B6D6-538C0308DA0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88564EFE-E63A-442E-B6D6-538C0308DA0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88564EFE-E63A-442E-B6D6-538C0308DA0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E27CBA1-DC5C-4C9A-A306-D89295151DAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

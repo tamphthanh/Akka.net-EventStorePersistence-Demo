@@ -4,14 +4,11 @@ using System;
 using Akka.Persistence.EventStore;
 using Akka.Configuration;
 using AkkaEventStore.Models;
-using System.Threading;
-using AkkaEventStore.Messages.Commands;
 using AkkaEventStore.Messages;
-using EventStore.ClientAPI;
-using System.Net;
-using System.Text;
 
-namespace AkkaEventStore
+using static System.Console;
+
+namespace AkkaEventStore.Console
 {
     class Program
     {
@@ -35,26 +32,27 @@ namespace AkkaEventStore
                     eventstore {
                         class = ""Akka.Persistence.EventStore.Journal.EventStoreJournal, Akka.Persistence.EventStore""
                         plugin-dispatcher = ""akka.actor.default-dispatcher""
-                        connection-string = ""ConnectTo=tcp://admin:changeit@127.0.0.1:1113;""
+                        host=""127.0.0.1""
+                        tcp-port = ""1113""
                     }
                 }
             }");
 
             using (var system = ActorSystem.Create("AkkaEventStore", config))
-            {                
+            {
                 EventStorePersistence.Init(system);
 
                 Start(system);
-                
-                Console.ReadLine();
+
+                ReadLine();
             }
         }
 
         private static void Start(ActorSystem system)
         {
-            Console.WriteLine("System Started...");            
+            WriteLine("System Started...");
             var aref = system.ActorOf(Props.Create<BasketCoordinatorActor>(), "basket-coordinator");
-            
+
             /*var counter = 0;
             var total = 1000;
             for (int i = 0; i < total; i++)
@@ -65,7 +63,7 @@ namespace AkkaEventStore
             while (true)
             {
                 //load testing
-                
+
                 /*if (counter % 50 == 0)
                 {
                     Thread.Sleep(1);
@@ -75,7 +73,7 @@ namespace AkkaEventStore
                 var tokens = new[] { "put", "basket-" + new Random().Next(0, total) , "p1", "20", "10" }; // using for load testing
                 */
 
-                var command = Console.ReadLine();                
+                var command = ReadLine();
                 var tokens = command.Split(' ');
 
                 switch (tokens[0])
@@ -101,13 +99,15 @@ namespace AkkaEventStore
                                 , new LineItem()
                                 {
                                     ProductId = tokens[2]
-                                    ,Quantity = Convert.ToInt32(tokens[3])
-                                    ,Price = Convert.ToInt32(tokens[4])
+                                    ,
+                                    Quantity = Convert.ToInt32(tokens[3])
+                                    ,
+                                    Price = Convert.ToInt32(tokens[4])
                                 }));
                         }
                         else
                         {
-                            Console.WriteLine("Invalid parameters");
+                            WriteLine("Invalid parameters");
                         }
                         break;
                     case "remove":
@@ -122,7 +122,7 @@ namespace AkkaEventStore
                         }
                         else
                         {
-                            Console.WriteLine("Invalid parameters");
+                            WriteLine("Invalid parameters");
                         }
                         break;
                     default:
